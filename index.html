@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BUYIT | Premium Grocery Delivery</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,17 +13,19 @@
           extend: {
             fontFamily: { sans: ['Inter', 'sans-serif'] },
             colors: {
-              primary: '#FFD700',
-              secondary: '#1A1A1A',
-              accent: '#4ADE80',
-              surface: '#F3F4F6',
+              primary: '#FFD700', // Bright Yellow
+              secondary: '#1A1A1A', // Dark Charcoal
+              accent: '#4ADE80', // Soft Green
+              surface: '#F3F4F6', // Light Grey
             }
           }
         }
       }
     </script>
-    <!-- Icons -->
+    
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <!-- Custom Styles -->
     <link rel="stylesheet" href="style.css">
 <script type="importmap">
@@ -30,8 +33,7 @@
   "imports": {
     "react": "https://esm.sh/react@^19.2.4",
     "react/": "https://esm.sh/react@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0"
+    "lucide-react": "https://esm.sh/lucide-react@^0.574.0"
   }
 }
 </script>
@@ -39,16 +41,16 @@
 <body class="bg-surface text-secondary antialiased">
     
     <!-- Header -->
-    <header class="sticky top-0 z-40 bg-white py-5 shadow-sm transition-all duration-300">
+    <header class="sticky top-0 z-40 bg-white py-4 shadow-sm transition-all duration-300">
         <div class="container mx-auto px-4 md:px-6 flex items-center justify-between gap-4">
+            <!-- Logo -->
             <div class="flex items-center gap-6 cursor-pointer" onclick="window.location.reload()">
                 <div class="text-3xl font-extrabold tracking-tighter text-secondary">
                     BUY<span class="text-primary">IT</span>
                 </div>
                 <div class="hidden lg:flex items-center gap-2 text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
-                    <i data-lucide="map-pin" width="16"></i>
+                    <i data-lucide="map-pin" class="w-4 h-4"></i>
                     <span>Downtown, New York</span>
-                    <span class="text-xs">▼</span>
                 </div>
             </div>
 
@@ -56,17 +58,19 @@
             <div class="flex-1 max-w-2xl relative hidden md:block">
                 <input id="search-input" type="text" placeholder="Search for 'avocado'..." 
                     class="w-full bg-gray-100 border-none rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none text-sm font-medium">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="20"></i>
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </div>
             </div>
 
             <!-- Actions -->
             <div class="flex items-center gap-3">
                 <a href="admin.html" class="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors hidden sm:block" title="Admin Login">
-                    <i data-lucide="user" width="22"></i>
+                    <i data-lucide="user" class="w-6 h-6"></i>
                 </a>
                 
                 <button id="cart-btn" class="relative p-2.5 rounded-full bg-secondary text-white hover:bg-black transition-transform active:scale-95">
-                    <i data-lucide="shopping-cart" width="22"></i>
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
                     <span id="cart-count-badge" class="absolute -top-1 -right-1 bg-primary text-secondary text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
                 </button>
             </div>
@@ -75,9 +79,11 @@
         <!-- Mobile Search -->
         <div class="md:hidden px-4 pb-2 mt-2">
             <div class="relative">
-                <input id="mobile-search-input" type="text" placeholder="Search..." 
+                <input id="mobile-search-input" type="text" placeholder="Search products..." 
                     class="w-full bg-gray-100 border-none rounded-xl py-2.5 pl-10 pr-4 focus:ring-2 focus:ring-primary outline-none text-sm">
-                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="16"></i>
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                </div>
             </div>
         </div>
     </header>
@@ -85,13 +91,15 @@
     <!-- Main Content -->
     <main>
         <!-- Hero Section -->
-        <section id="hero-slider" class="container mx-auto px-4 md:px-6 mb-8 mt-4">
-            <!-- Dynamically Rendered -->
+        <section id="hero-slider" class="container mx-auto px-4 md:px-6 mb-8 mt-4 min-h-[300px]">
+            <!-- Skeleton Loader -->
+            <div class="animate-pulse bg-gray-200 rounded-3xl h-[300px] w-full"></div>
         </section>
 
         <!-- Categories -->
         <section class="container mx-auto px-4 md:px-6 mb-12">
-            <div id="categories-container" class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+            <h3 class="text-lg font-bold mb-4 md:hidden">Categories</h3>
+            <div id="categories-container" class="flex gap-4 overflow-x-auto no-scrollbar pb-4 touch-pan-x">
                 <!-- Dynamically Rendered -->
             </div>
         </section>
@@ -150,24 +158,25 @@
     </footer>
 
     <!-- Cart Drawer -->
-    <div id="cart-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 opacity-0 pointer-events-none cart-overlay"></div>
-    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full cart-drawer flex flex-col">
+    <div id="cart-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 opacity-0 pointer-events-none cart-overlay transition-opacity duration-300"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full cart-drawer flex flex-col transition-transform duration-300">
         <div class="p-5 flex items-center justify-between border-b border-gray-100">
             <div class="flex items-center gap-3">
                 <div class="bg-primary/20 p-2 rounded-xl">
-                    <i data-lucide="shopping-bag" class="text-yellow-700" width="20"></i>
+                    <i data-lucide="shopping-bag" class="text-yellow-700 w-5 h-5"></i>
                 </div>
                 <h2 class="text-xl font-bold text-secondary">My Cart</h2>
             </div>
             <button id="close-cart-btn" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <i data-lucide="x" class="text-gray-500" width="24"></i>
+                <i data-lucide="x" class="text-gray-500 w-6 h-6"></i>
             </button>
         </div>
 
         <div id="cart-content" class="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar relative">
             <div id="cart-empty-state" class="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-50 hidden">
-                <i data-lucide="shopping-bag" width="64" class="text-gray-300"></i>
+                <i data-lucide="shopping-bag" class="text-gray-300 w-16 h-16"></i>
                 <p class="text-lg font-medium">Your cart is empty</p>
+                <button onclick="document.getElementById('close-cart-btn').click()" class="mt-4 text-primary font-bold hover:underline">Start Shopping</button>
             </div>
             <div id="cart-items-container" class="space-y-4">
                 <!-- Items Rendered Here -->
@@ -180,13 +189,13 @@
                 <div class="flex justify-between text-gray-500"><span>Delivery Fee</span><span id="cart-delivery">FREE</span></div>
                 <div class="flex justify-between text-lg font-bold text-secondary pt-2 border-t border-gray-100"><span>Total</span><span id="cart-total">$0.00</span></div>
             </div>
-            <button class="w-full bg-primary text-secondary font-bold rounded-xl py-4 shadow-lg shadow-primary/20 hover:bg-yellow-300 transition-colors">
+            <button onclick="alert('Checkout simulated! Thanks for shopping.')" class="w-full bg-primary text-secondary font-bold rounded-xl py-4 shadow-lg shadow-primary/20 hover:bg-yellow-300 transition-colors">
                 Proceed to Checkout
             </button>
         </div>
     </div>
 
-    <!-- Logic -->
+    <!-- Application Logic -->
     <script src="js/data.js"></script>
     <script src="js/store.js"></script>
 </body>

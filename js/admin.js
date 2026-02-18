@@ -8,13 +8,16 @@ let adminState = {
 
 document.addEventListener('DOMContentLoaded', () => {
   setupAdminAuth();
-  adminState.products = ProductService.getAll();
-  renderAdminProducts();
-  populateCategorySelect();
-  updateStats();
+  // We don't render products immediately until logged in/dashboard shown
   setupProductForm();
-  lucide.createIcons();
+  refreshIcons();
 });
+
+function refreshIcons() {
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
+}
 
 // --- Auth ---
 function setupAdminAuth() {
@@ -23,7 +26,7 @@ function setupAdminAuth() {
   const dashboardView = document.getElementById('dashboard-view');
   const loginError = document.getElementById('login-error');
 
-  // Check session (simulated)
+  // Check session
   if (sessionStorage.getItem('isAdmin')) {
     showDashboard();
   }
@@ -41,44 +44,71 @@ function setupAdminAuth() {
     }
   });
 
-  document.getElementById('logout-btn').addEventListener('click', logout);
-  document.getElementById('mobile-logout-btn').addEventListener('click', logout);
-
-  function showDashboard() {
-    loginView.classList.add('hidden');
-    dashboardView.classList.remove('hidden');
-    lucide.createIcons(); // Refresh icons for dashboard
-  }
-
+  // Use delegation or robust selection for logout as elements might be hidden/mobile
+  document.addEventListener('click', (e) => {
+    if(e.target.closest('#logout-btn')) {
+      logout();
+    }
+  });
+  
   function logout() {
     sessionStorage.removeItem('isAdmin');
     window.location.reload();
   }
+
+  function showDashboard() {
+    loginView.classList.add('hidden');
+    dashboardView.classList.remove('hidden');
+    
+    // Initialize Dashboard Data
+    adminState.products = window.ProductService.getAll();
+    renderAdminProducts();
+    populateCategorySelect();
+    updateStats();
+    
+    refreshIcons();
+  }
 }
 
-// --- Navigation ---
-function switchTab(tabName) {
-  // Hide all
+// --- Mobile Navigation ---
+window.toggleSidebar = () => {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if(!sidebar || !backdrop) return;
+  
+  if (sidebar.classList.contains('-translate-x-full')) {
+    sidebar.classList.remove('-translate-x-full');
+    backdrop.classList.remove('hidden');
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    backdrop.classList.add('hidden');
+  }
+};
+
+window.switchTab = (tabName) => {
+  // Hide all tabs
   document.getElementById('tab-overview').classList.add('hidden');
   document.getElementById('tab-products').classList.add('hidden');
   
   // Reset Nav Styles
-  const navs = ['nav-overview', 'nav-products'];
-  navs.forEach(id => {
+  ['nav-overview', 'nav-products'].forEach(id => {
     const el = document.getElementById(id);
-    el.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-gray-800 hover:text-white";
+    if(el) el.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-gray-800 hover:text-white";
   });
 
-  // Show Active
+  // Show Active Tab
   document.getElementById(`tab-${tabName}`).classList.remove('hidden');
   const activeNav = document.getElementById(`nav-${tabName}`);
-  activeNav.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all bg-primary text-secondary font-bold";
-}
+  if(activeNav) activeNav.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all bg-primary text-secondary font-bold";
+  
+  refreshIcons();
+};
 
 // --- Product Management ---
 
 function renderAdminProducts() {
   const tbody = document.getElementById('products-table-body');
+  if(!tbody) return;
   
   tbody.innerHTML = adminState.products.map(product => `
     <tr class="hover:bg-gray-50 transition-colors group border-b border-gray-50">
@@ -92,7 +122,7 @@ function renderAdminProducts() {
         </div>
       </td>
       <td class="p-4 text-sm text-gray-500">${product.category}</td>
-      <td class="p-4 font-bold text-secondary">${formatCurrency(product.price)}</td>
+      <td class="p-4 font-bold text-secondary">${window.formatCurrency(product.price)}</td>
       <td class="p-4 text-right">
         <button onclick="editProduct('${product.id}')" class="text-blue-500 hover:underline text-sm mr-3 font-bold">Edit</button>
         <button onclick="deleteProduct('${product.id}')" class="text-red-500 hover:underline text-sm font-bold">Delete</button>
@@ -102,11 +132,13 @@ function renderAdminProducts() {
 }
 
 function updateStats() {
-  document.getElementById('stat-total-products').textContent = adminState.products.length;
+  const statTotal = document.getElementById('stat-total-products');
+  if(statTotal) statTotal.textContent = adminState.products.length;
 }
 
 function populateCategorySelect() {
   const select = document.getElementById('p-category');
+  if(!select) return;
   const categories = ['Fruits & Veg', 'Dairy & Bakery', 'Snacks', 'Beverages', 'Household', 'Personal Care'];
   select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
 }
@@ -115,69 +147,66 @@ function populateCategorySelect() {
 const modal = document.getElementById('product-modal');
 const modalContent = document.getElementById('product-modal-content');
 
-function openProductModal() {
+window.openProductModal = () => {
   document.getElementById('product-form').reset();
   document.getElementById('edit-id').value = '';
   document.getElementById('modal-title').textContent = 'Add Product';
   
   modal.classList.remove('hidden');
-  // Small delay to allow display:block to apply before opacity transition
   setTimeout(() => {
     modal.classList.remove('opacity-0');
     modalContent.classList.remove('scale-95');
     modalContent.classList.add('scale-100');
   }, 10);
-}
+};
 
-function closeProductModal() {
+window.closeProductModal = () => {
   modal.classList.add('opacity-0');
   modalContent.classList.remove('scale-100');
   modalContent.classList.add('scale-95');
   setTimeout(() => modal.classList.add('hidden'), 300);
-}
+};
 
 function setupProductForm() {
-  document.getElementById('product-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const id = document.getElementById('edit-id').value;
-    const name = document.getElementById('p-name').value;
-    const price = parseFloat(document.getElementById('p-price').value);
-    const weight = document.getElementById('p-weight').value;
-    const category = document.getElementById('p-category').value;
-    let image = document.getElementById('p-image').value;
+  const form = document.getElementById('product-form');
+  if(form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('edit-id').value;
+      const name = document.getElementById('p-name').value;
+      const price = parseFloat(document.getElementById('p-price').value);
+      const weight = document.getElementById('p-weight').value;
+      const category = document.getElementById('p-category').value;
+      let image = document.getElementById('p-image').value;
 
-    if (!image) {
-      image = `https://picsum.photos/seed/${name}/400/400`;
-    }
-
-    if (id) {
-      // Update
-      const index = adminState.products.findIndex(p => p.id === id);
-      if (index > -1) {
-        adminState.products[index] = { ...adminState.products[index], name, price, weight, category, image };
+      if (!image) {
+        image = `https://picsum.photos/seed/${name}/400/400`;
       }
-    } else {
-      // Create
-      const newProduct = {
-        id: `p_${Date.now()}`,
-        name, price, weight, category, image,
-        discount: 0
-      };
-      adminState.products.push(newProduct);
-    }
 
-    ProductService.save(adminState.products);
-    renderAdminProducts();
-    updateStats();
-    closeProductModal();
-  });
+      if (id) {
+        // Update
+        const index = adminState.products.findIndex(p => p.id === id);
+        if (index > -1) {
+          adminState.products[index] = { ...adminState.products[index], name, price, weight, category, image };
+        }
+      } else {
+        // Create
+        const newProduct = {
+          id: `p_${Date.now()}`,
+          name, price, weight, category, image,
+          discount: 0
+        };
+        adminState.products.push(newProduct);
+      }
+
+      window.ProductService.save(adminState.products);
+      renderAdminProducts();
+      updateStats();
+      window.closeProductModal();
+    });
+  }
 }
-
-// Global scope functions for onclick attributes
-window.switchTab = switchTab;
-window.openProductModal = openProductModal;
-window.closeProductModal = closeProductModal;
 
 window.editProduct = (id) => {
   const p = adminState.products.find(x => x.id === id);
@@ -201,9 +230,9 @@ window.editProduct = (id) => {
 };
 
 window.deleteProduct = (id) => {
-  if(confirm('Are you sure?')) {
+  if(confirm('Are you sure you want to delete this product?')) {
     adminState.products = adminState.products.filter(p => p.id !== id);
-    ProductService.save(adminState.products);
+    window.ProductService.save(adminState.products);
     renderAdminProducts();
     updateStats();
   }
