@@ -1,0 +1,1 @@
+// This file is no longer used. The application has been migrated to Vanilla JS (index.html, admin.html).

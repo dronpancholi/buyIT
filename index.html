@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUYIT | Premium Grocery Delivery</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', 'sans-serif'] },
+            colors: {
+              primary: '#FFD700',
+              secondary: '#1A1A1A',
+              accent: '#4ADE80',
+              surface: '#F3F4F6',
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0"
+  }
+}
+</script>
+</head>
+<body class="bg-surface text-secondary antialiased">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white py-5 shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-4 md:px-6 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-6 cursor-pointer" onclick="window.location.reload()">
+                <div class="text-3xl font-extrabold tracking-tighter text-secondary">
+                    BUY<span class="text-primary">IT</span>
+                </div>
+                <div class="hidden lg:flex items-center gap-2 text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
+                    <i data-lucide="map-pin" width="16"></i>
+                    <span>Downtown, New York</span>
+                    <span class="text-xs">▼</span>
+                </div>
+            </div>
+
+            <!-- Desktop Search -->
+            <div class="flex-1 max-w-2xl relative hidden md:block">
+                <input id="search-input" type="text" placeholder="Search for 'avocado'..." 
+                    class="w-full bg-gray-100 border-none rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none text-sm font-medium">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="20"></i>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3">
+                <a href="admin.html" class="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors hidden sm:block" title="Admin Login">
+                    <i data-lucide="user" width="22"></i>
+                </a>
+                
+                <button id="cart-btn" class="relative p-2.5 rounded-full bg-secondary text-white hover:bg-black transition-transform active:scale-95">
+                    <i data-lucide="shopping-cart" width="22"></i>
+                    <span id="cart-count-badge" class="absolute -top-1 -right-1 bg-primary text-secondary text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search -->
+        <div class="md:hidden px-4 pb-2 mt-2">
+            <div class="relative">
+                <input id="mobile-search-input" type="text" placeholder="Search..." 
+                    class="w-full bg-gray-100 border-none rounded-xl py-2.5 pl-10 pr-4 focus:ring-2 focus:ring-primary outline-none text-sm">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="16"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero-slider" class="container mx-auto px-4 md:px-6 mb-8 mt-4">
+            <!-- Dynamically Rendered -->
+        </section>
+
+        <!-- Categories -->
+        <section class="container mx-auto px-4 md:px-6 mb-12">
+            <div id="categories-container" class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section class="container mx-auto px-4 md:px-6 mb-20">
+            <div class="flex items-center justify-between mb-8">
+                <h2 id="category-title" class="text-2xl font-bold text-secondary">Popular Products</h2>
+                <span id="item-count" class="text-sm text-gray-400 font-medium">Loading...</span>
+            </div>
+            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 pt-16 pb-8 mt-auto">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="text-2xl font-extrabold tracking-tighter text-secondary mb-4">
+                        BUY<span class="text-primary">IT</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Premium groceries delivered in minutes. Freshness guaranteed or your money back.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-secondary mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-primary transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-secondary mb-4">Help</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-primary transition-colors">Support</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-secondary mb-4">Newsletter</h4>
+                    <div class="flex gap-2">
+                        <input type="email" placeholder="Email" class="bg-gray-100 rounded-xl px-4 py-2 text-sm w-full outline-none focus:ring-2 focus:ring-primary">
+                        <button class="bg-secondary text-white rounded-xl px-4 py-2 text-sm font-bold hover:bg-black">→</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+                <p>© 2024 BUYIT Inc. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0"><span>Instagram</span><span>Twitter</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 opacity-0 pointer-events-none cart-overlay"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full cart-drawer flex flex-col">
+        <div class="p-5 flex items-center justify-between border-b border-gray-100">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary/20 p-2 rounded-xl">
+                    <i data-lucide="shopping-bag" class="text-yellow-700" width="20"></i>
+                </div>
+                <h2 class="text-xl font-bold text-secondary">My Cart</h2>
+            </div>
+            <button id="close-cart-btn" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <i data-lucide="x" class="text-gray-500" width="24"></i>
+            </button>
+        </div>
+
+        <div id="cart-content" class="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar relative">
+            <div id="cart-empty-state" class="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-50 hidden">
+                <i data-lucide="shopping-bag" width="64" class="text-gray-300"></i>
+                <p class="text-lg font-medium">Your cart is empty</p>
+            </div>
+            <div id="cart-items-container" class="space-y-4">
+                <!-- Items Rendered Here -->
+            </div>
+        </div>
+
+        <div id="cart-footer" class="p-6 bg-white border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] hidden">
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+                <div class="flex justify-between text-gray-500"><span>Delivery Fee</span><span id="cart-delivery">FREE</span></div>
+                <div class="flex justify-between text-lg font-bold text-secondary pt-2 border-t border-gray-100"><span>Total</span><span id="cart-total">$0.00</span></div>
+            </div>
+            <button class="w-full bg-primary text-secondary font-bold rounded-xl py-4 shadow-lg shadow-primary/20 hover:bg-yellow-300 transition-colors">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script src="js/data.js"></script>
+    <script src="js/store.js"></script>
+</body>
+</html>
